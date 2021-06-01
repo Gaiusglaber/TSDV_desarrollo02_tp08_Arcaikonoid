@@ -4,18 +4,21 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    public float speed = 5;
+    private float speed = 100f;
     public Player player;
-    private float ballgap = 2;
-    private bool launched = false;
-    private Vector3 vec3;
+    private float ballgap = 1.5f;
+    public bool launched = false;
+    private Rigidbody rb;
+    private Vector3 lastVelocity;
     // Update is called once per frame
+
     void Start()
     {
-        vec3 = transform.up;
+        rb = GetComponent<Rigidbody>();
     }
     void LateUpdate()
     {
+        lastVelocity = rb.velocity;
         if (!player.start)
         {
             Vector3 vec3 = player.transform.position;
@@ -27,20 +30,23 @@ public class Ball : MonoBehaviour
             if (!launched)
             {
                 RandomLauncher();
+                launched = true;
             }
-            transform.Translate(vec3 * speed * Time.deltaTime, Space.World);
         }
-
     }
     void RandomLauncher()
     {
-        float[] directions= new float[2]{0.5f,-0.5f};
-        vec3.x = directions[Random.Range(0, 1)];
-        vec3.Normalize();
+        float[] directions= new float[2]{100f,-100f};
+        rb.AddForce(new Vector3(directions[Random.Range(0, 1)], speed,0));
     }
-    void OnTriggerEnter(Collider collisioninfo)
+    void OnCollisionEnter(Collision collisioninfo)
     {
-        Debug.Log("labolachoco");
-        transform.forward = Vector3.Reflect(transform.forward, collisioninfo.gameObject.transform.forward);
+        var speed = lastVelocity.magnitude;
+        var direction = Vector3.Reflect(lastVelocity.normalized, collisioninfo.contacts[0].normal);
+        rb.velocity = direction * speed;
+        if (collisioninfo.gameObject.tag != "Player"&& collisioninfo.gameObject.tag != "Wall")
+        {
+            Destroy(collisioninfo.gameObject);
+        }
     }
 }

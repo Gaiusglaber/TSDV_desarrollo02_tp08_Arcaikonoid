@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float speed = 5;
+    public float speed = 10;
     public Ball ball;
     public bool start = false;
     public int lives = 4;
@@ -12,21 +12,14 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float verticalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxisRaw("Horizontal");
         Vector3 movementDirection = new Vector3(verticalInput, 0, 0);
-        if (canMove(transform.right) || verticalInput>0)
-        {
-            movementDirection.Normalize();
-            transform.Translate(movementDirection * -speed * Time.deltaTime, Space.World);
-        }else if (canMove(-transform.right) || verticalInput < 0)
-        {
-            movementDirection.Normalize();
-            transform.Translate(movementDirection * -speed * Time.deltaTime, Space.World);
-        }
+        transform.Translate(movementDirection * -speed * Time.deltaTime, Space.World);
         if (ball.transform.position.y < 1)
         {
             lives--;
             start = false;
+            ball.launched = true;
             transform.position = initialpos;
         }
         if (Input.GetKeyDown(KeyCode.Space))
@@ -35,17 +28,9 @@ public class Player : MonoBehaviour
         }
     }
 
-    bool canMove(Vector3 direction)
+    void OnCollisionExit(Collision colliderinfo)
     {
-        RaycastHit ray;
-        Physics.Raycast(transform.position, direction, out ray, 6.0f);
-        if (ray.transform != null)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        Debug.Log("choque");
+        GetComponent<Rigidbody>().velocity=Vector3.zero;
     }
 }

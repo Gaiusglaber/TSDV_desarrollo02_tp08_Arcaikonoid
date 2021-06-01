@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -12,25 +13,32 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float verticalInput = Input.GetAxisRaw("Horizontal");
-        Vector3 movementDirection = new Vector3(verticalInput, 0, 0);
-        transform.Translate(movementDirection * -speed * Time.deltaTime, Space.World);
-        if (ball.transform.position.y < 1)
+        if (!GameManager.gameover)
         {
-            lives--;
-            start = false;
-            ball.launched = true;
-            transform.position = initialpos;
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            start = true;
+            float verticalInput = Input.GetAxisRaw("Horizontal");
+            Vector3 movementDirection = new Vector3(verticalInput, 0, 0);
+            transform.Translate(movementDirection * -speed * Time.deltaTime, Space.World);
+            if (ball.transform.position.y < 1)
+            {
+                lives--;
+                if (lives <= 0)
+                {
+                    GameManager.win = false;
+                    GameManager.Gameover();
+                }
+                start = false;
+                ball.launched = true;
+                transform.position = initialpos;
+            }
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                start = true;
+            }
         }
     }
 
     void OnCollisionExit(Collision colliderinfo)
     {
-        Debug.Log("choque");
         GetComponent<Rigidbody>().velocity=Vector3.zero;
     }
 }

@@ -18,19 +18,22 @@ public class Ball : MonoBehaviour
     }
     void LateUpdate()
     {
-        lastVelocity = rb.velocity;
-        if (!player.start)
+        if (!GameManager.gameover)
         {
-            Vector3 vec3 = player.transform.position;
-            vec3.y += ballgap;
-            transform.position = vec3;
-        }
-        else
-        {
-            if (!launched)
+            lastVelocity = rb.velocity;
+            if (!player.start)
             {
-                RandomLauncher();
-                launched = true;
+                Vector3 vec3 = player.transform.position;
+                vec3.y += ballgap;
+                transform.position = vec3;
+            }
+            else
+            {
+                if (!launched)
+                {
+                    RandomLauncher();
+                    launched = true;
+                }
             }
         }
     }

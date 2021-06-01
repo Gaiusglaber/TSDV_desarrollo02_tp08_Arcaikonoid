@@ -6,11 +6,16 @@ using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour
 {
     public float speed = 10;
+    public TMPro.TMP_Text livesText;
     public Ball ball;
     public bool start = false;
     public int lives = 4;
     private Vector3 initialpos = new Vector3(-16f, 3, 0);
     // Update is called once per frame
+    void Start()
+    {
+        livesText.text = lives.ToString();
+    }
     void Update()
     {
         if (!GameManager.gameover)
@@ -21,6 +26,7 @@ public class Player : MonoBehaviour
             if (ball.transform.position.y < 1)
             {
                 lives--;
+                livesText.text = lives.ToString();
                 if (lives <= 0)
                 {
                     GameManager.win = false;

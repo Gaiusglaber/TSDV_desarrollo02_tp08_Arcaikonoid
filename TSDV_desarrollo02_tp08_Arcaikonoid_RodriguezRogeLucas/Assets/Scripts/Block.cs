@@ -5,14 +5,16 @@ using UnityEngine;
 public class Block : MonoBehaviour
 {
     public static int cantscore = 0;
-
     void OnDestroy()
     {
-        cantscore+=50;
-        if (!GameObject.Find("Cube(Clone)"))
+        if (!GameManager.gameover)
         {
-            GameManager.win = true;
-            GameManager.Gameover();
+            cantscore += 50;
+            if (!GameObject.Find("Cube(Clone)"))
+            {
+                GameManager.win = true;
+                GameManager.Gameover();
+            }
         }
     }
 }
